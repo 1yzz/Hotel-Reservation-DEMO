@@ -1,0 +1,88 @@
+.create-reservation-page {
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.create-reservation-page h1 {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.reservation-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.cancel-btn {
+  background-color: #e2e8f0;
+  color: #1e293b;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-btn:hover {
+  background-color: #cbd5e1;
+}
+
+.submit-btn {
+  background-color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: var(--secondary-color);
+}
+
+.submit-btn:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.error {
+  color: var(--error-color);
+  margin-bottom: 1rem;
+  text-align: center;
+} 
