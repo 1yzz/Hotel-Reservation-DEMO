@@ -28,7 +28,7 @@ const EditReservation = () => {
           query: `
             query GetReservation($id: ID!) {
               reservation(id: $id) {
-                id
+                _id
                 expectedArrival
                 tableSize
               }
@@ -72,7 +72,7 @@ const EditReservation = () => {
           query: `
             mutation UpdateReservation($id: ID!, $input: UpdateReservationInput!) {
               updateReservation(id: $id, input: $input) {
-                id
+                _id
                 expectedArrival
                 tableSize
               }

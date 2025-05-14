@@ -1,79 +1,67 @@
-import { DataSource, Between } from 'typeorm';
 import { Reservation, CreateReservationInput, UpdateReservationInput, ReservationStatus } from '../types/reservation';
-import { ReservationEntity } from '../entities/reservation.entity';
+import { ReservationModel } from '../models/reservation.model';
+import { MongoDBConnection } from '../config/mongodb.config';
 
 export class ReservationService {
-  private dataSource: DataSource;
-
-  constructor() {
-    this.dataSource = new DataSource({
-      type: 'sqlite',
-      database: 'reservations.db',
-      synchronize: true,
-      logging: true,
-      entities: [ReservationEntity],
-    });
-  }
-
   async initialize() {
-    await this.dataSource.initialize();
+    await MongoDBConnection.getInstance().connect();
   }
 
   async createReservation(input: CreateReservationInput): Promise<Reservation> {
-    const repository = this.dataSource.getRepository(ReservationEntity);
-    const reservation = repository.create({
+    const reservation = new ReservationModel({
       ...input,
+      status: ReservationStatus.REQUESTED,
       createdAt: new Date(),
-      updatedAt: new Date(),
+      updatedAt: new Date()
     });
-    return repository.save(reservation);
+    return reservation.save();
   }
 
-  async updateReservation(id: string, input: UpdateReservationInput): Promise<Reservation> {
-    const repository = this.dataSource.getRepository(ReservationEntity);
-    await repository.update(id, {
-      ...input,
-      updatedAt: new Date(),
-    });
-    return repository.findOneByOrFail({ id });
+  async findById(id: string): Promise<Reservation | null> {
+    return ReservationModel.findById(id)
+      .populate('guest', 'email name phone')
+      .exec();
   }
 
-  async updateReservationStatus(id: string, status: ReservationStatus): Promise<Reservation> {
-    return this.updateReservation(id, { status });
-  }
-
-  async findByGuestId(guestId: string): Promise<Reservation> {
-    const repository = this.dataSource.getRepository(ReservationEntity);
-    return repository.findOneByOrFail({ guestId });
-  }
-
-  async findAll(): Promise<Reservation[]> {
-    const repository = this.dataSource.getRepository(ReservationEntity);
-    return repository.find();
-  }
-
-  async findByDate(date: Date): Promise<Reservation[]> {
-    const repository = this.dataSource.getRepository(ReservationEntity);
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-    
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
-    
-    return repository.find({
-      where: {
-        expectedArrival: Between(startOfDay, endOfDay),
-      },
-    });
+  async findByGuestId(guestId: string): Promise<Reservation[]> {
+    return ReservationModel.find({ guestId })
+      .populate('guest', 'email name phone')
+      .exec();
   }
 
   async findByStatus(status: ReservationStatus): Promise<Reservation[]> {
-    const repository = this.dataSource.getRepository(ReservationEntity);
-    return repository.findBy({ status });
+    return ReservationModel.find({ status })
+      .populate('guest', 'email name phone')
+      .exec();
   }
 
-  async findById(id: string): Promise<Reservation> {
-    const repository = this.dataSource.getRepository(ReservationEntity);
-    return repository.findOneByOrFail({ id });
+  async findByDate(date: Date): Promise<Reservation[]> {
+    const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+    return ReservationModel.find({
+      expectedArrival: { $gte: startOfDay, $lte: endOfDay }
+    })
+      .populate('guest', 'email name phone')
+      .exec();
+  }
+
+  async findAll(): Promise<Reservation[]> {
+    return ReservationModel.find()
+      .populate('guest', 'email name phone')
+      .exec();
+  }
+
+  async updateReservation(id: string, input: UpdateReservationInput): Promise<Reservation | null> {
+    return ReservationModel.findByIdAndUpdate(
+      id,
+      { ...input, updatedAt: new Date() },
+      { new: true }
+    )
+      .populate('guest', 'email name phone')
+      .exec();
+  }
+
+  async updateReservationStatus(id: string, status: ReservationStatus): Promise<Reservation | null> {
+    return this.updateReservation(id, { status });
   }
 } 

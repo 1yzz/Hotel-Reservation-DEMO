@@ -15,8 +15,8 @@ export const typeDefs = gql`
   }
 
   type Reservation {
-    id: ID!
-    guestId: ID!
+    _id: ID!
+    guest: User!
     expectedArrival: String!
     tableSize: Int!
     status: ReservationStatus!
@@ -25,12 +25,11 @@ export const typeDefs = gql`
   }
 
   type User {
-    id: ID!
+    _id: ID!
     email: String!
     name: String!
+    phone: String!
     role: UserRole!
-    createdAt: String!
-    updatedAt: String!
   }
 
   type AuthPayload {
@@ -39,7 +38,6 @@ export const typeDefs = gql`
   }
 
   input CreateReservationInput {
-    guestId: ID!
     expectedArrival: String!
     tableSize: Int!
   }
@@ -70,8 +68,8 @@ export const typeDefs = gql`
 
   type Mutation {
     createReservation(input: CreateReservationInput!): Reservation!
-    updateReservation(id: ID!, input: UpdateReservationInput!): Reservation!
-    cancelReservation(id: ID!): Reservation!
+    updateReservation(id: ID!, input: UpdateReservationInput!): Reservation
+    cancelReservation(id: ID!): Reservation
     register(input: RegisterInput!): AuthPayload!
     login(input: LoginInput!): AuthPayload!
   }

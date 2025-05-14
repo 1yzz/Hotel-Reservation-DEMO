@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { UserService } from '../services/user.service';
-import { UserRole } from '../entities/user.entity';
+import { UserRole } from '../types/user'; 
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 

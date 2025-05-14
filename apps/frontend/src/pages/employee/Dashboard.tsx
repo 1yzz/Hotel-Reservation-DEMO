@@ -8,26 +8,38 @@ const Dashboard = () => {
   const [loading, setLoading] = createSignal(true);
   const [error, setError] = createSignal<string | null>(null);
   const [selectedDate, setSelectedDate] = createSignal(new Date().toISOString().split('T')[0]);
-  const [selectedStatus, setSelectedStatus] = createSignal<ReservationStatus | 'ALL'>('ALL');
+  const [selectedStatus, setSelectedStatus] = createSignal<ReservationStatus>(ReservationStatus.requested);
 
   const fetchReservations = async () => {
-    try {
-      const queryParams = new URLSearchParams({
-        date: selectedDate(),
-        ...(selectedStatus() !== 'ALL' && { status: selectedStatus() }),
-      });
 
-      const response = await fetch(`/api/reservations?${queryParams}`, {
+    try {
+      const response = await fetch(`/api/graphql`, {
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          query: `
+            query {
+              reservations(date: "${selectedDate()}", status: "${selectedStatus()}") {
+                id
+                status
+                expectedArrival
+                tableSize
+              } 
+            }
+          `,
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to fetch reservations');
 
       const data = await response.json();
-      setReservations(data);
+
+      setReservations(data.data.reservations);
     } catch (err) {
+
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
@@ -77,13 +89,13 @@ const Dashboard = () => {
           <select
             id="status"
             value={selectedStatus()}
-            onChange={(e) => setSelectedStatus(e.target.value as ReservationStatus | 'ALL')}
+            onChange={(e) => setSelectedStatus(e.target.value as ReservationStatus)}
           >
             <option value="ALL">All Statuses</option>
-            <option value={ReservationStatus.PENDING}>Pending</option>
-            <option value={ReservationStatus.APPROVED}>Approved</option>
-            <option value={ReservationStatus.CANCELLED}>Cancelled</option>
-            <option value={ReservationStatus.COMPLETED}>Completed</option>
+            <option value={ReservationStatus.requested}>Pending</option>
+            <option value={ReservationStatus.approved}>Approved</option>
+            <option value={ReservationStatus.cancelled}>Cancelled</option>
+            <option value={ReservationStatus.completed}>Completed</option>
           </select>
         </div>
       </div>
@@ -110,15 +122,12 @@ const Dashboard = () => {
                     </span>
                   </div>
                   <div class="reservation-details">
-                    <p><strong>Guest:</strong> {reservation.user.name}</p>
-                    <p><strong>Email:</strong> {reservation.user.email}</p>
-                    <p><strong>Phone:</strong> {reservation.user.phone}</p>
+                    <p><strong>Guest:</strong> {reservation?.guest?.name}</p>
+                    <p><strong>Phone:</strong> {reservation?.guest?.phone}</p>
                     <p><strong>Date:</strong> {new Date(reservation.date).toLocaleDateString()}</p>
                     <p><strong>Time:</strong> {reservation.time}</p>
-                    <p><strong>Party Size:</strong> {reservation.partySize}</p>
-                    {reservation.specialRequests && (
-                      <p><strong>Special Requests:</strong> {reservation.specialRequests}</p>
-                    )}
+                    <p><strong>Party Size:</strong> {reservation.tableSize}</p>
+              
                   </div>
                   <div class="reservation-actions">
                     <A
@@ -129,23 +138,23 @@ const Dashboard = () => {
                     </A>
                     <div class="status-actions">
                       <button
-                        onClick={() => updateReservationStatus(reservation.id, ReservationStatus.APPROVED)}
+                        onClick={() => updateReservationStatus(reservation.id, ReservationStatus.approved)}
                         class="approve-btn"
-                        disabled={reservation.status === ReservationStatus.APPROVED}
+                        disabled={reservation.status === ReservationStatus.approved}
                       >
                         Approve
                       </button>
                       <button
-                        onClick={() => updateReservationStatus(reservation.id, ReservationStatus.CANCELLED)}
+                        onClick={() => updateReservationStatus(reservation.id, ReservationStatus.cancelled)}
                         class="cancel-btn"
-                        disabled={reservation.status === ReservationStatus.CANCELLED}
+                        disabled={reservation.status === ReservationStatus.cancelled}
                       >
                         Cancel
                       </button>
                       <button
-                        onClick={() => updateReservationStatus(reservation.id, ReservationStatus.COMPLETED)}
+                        onClick={() => updateReservationStatus(reservation.id, ReservationStatus.completed)}
                         class="complete-btn"
-                        disabled={reservation.status === ReservationStatus.COMPLETED}
+                        disabled={reservation.status === ReservationStatus.completed}
                       >
                         Complete
                       </button>

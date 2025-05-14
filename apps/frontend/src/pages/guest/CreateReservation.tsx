@@ -28,7 +28,7 @@ const CreateReservation = () => {
           query: `
             mutation CreateReservation($input: CreateReservationInput!) {
               createReservation(input: $input) {
-                guestId
+                _id          
                 expectedArrival
                 tableSize
               }
@@ -36,7 +36,6 @@ const CreateReservation = () => {
           `,    
           variables: {
             input: {
-              guestId: JSON.parse(localStorage.getItem('user') || '{}').id,
               expectedArrival: formData().date + 'T' + formData().time,
               tableSize: formData().tableSize,
             }

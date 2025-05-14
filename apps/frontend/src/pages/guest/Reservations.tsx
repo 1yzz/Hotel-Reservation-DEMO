@@ -22,7 +22,7 @@ const GuestReservations = () => {
           query: `
             query MyReservations {
               reservations {
-                id
+                _id
                 expectedArrival
                 tableSize
                 status
@@ -55,7 +55,7 @@ const GuestReservations = () => {
           query: `
             mutation CancelReservation($id: ID!) {
               cancelReservation(id: $id) {
-                id
+                _id
               }
             }
           `,
@@ -102,7 +102,7 @@ const GuestReservations = () => {
               {reservations().map((reservation) => (
                 <div class="reservation-card">
                   <div class="reservation-header">
-                    <h3>Reservation #{reservation.id}</h3>
+                    <h3>Reservation #{reservation._id}</h3>
                     <span class={`status ${reservation.status.toLowerCase()}`}>
                       {reservation.status}
                     </span>
@@ -115,13 +115,13 @@ const GuestReservations = () => {
                   <div class="reservation-actions">
                       <Show when={reservation.status === ReservationStatus.requested}>
                       <A
-                        href={`/reservations/${reservation.id}/edit`}
+                        href={`/reservations/${reservation._id}/edit`}
                         class="edit-btn"
                       >
                         Edit
                       </A>
                       <button
-                        onClick={() => cancelReservation(reservation.id)}
+                        onClick={() => cancelReservation(reservation._id)}
                         class="cancel-btn"
                       >
                         Cancel

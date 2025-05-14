@@ -2,7 +2,7 @@ import { createSignal, Show } from 'solid-js';
 import { A, useNavigate } from '@solidjs/router';
 import { useAuth } from '@hooks/useAuth';
 import './Login.css';
-
+import { UserRole } from '@/types/user';
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -19,8 +19,15 @@ const Login = () => {
     setError(null);
 
     try {
-      await login(formData().phone, formData().password);
-      navigate('/');
+      const user = await login(formData().phone, formData().password);
+      
+      // TODO: redirect to employee dashboard if user is employee
+      if (user.role === UserRole.EMPLOYEE) {
+        navigate('/employee/dashboard');
+      } else {
+        navigate('/');
+      }
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

@@ -45,7 +45,7 @@ export const useAuth = () => {
     initializeAuth();
   });
 
-  const login = async (phone: string, password: string) => {
+  const login = async (phone: string, password: string): Promise<User> => {
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -59,7 +59,7 @@ export const useAuth = () => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
-      navigate('/');
+      return data.user;
     } catch (error) {
       console.error('Login error:', error);
       throw error;

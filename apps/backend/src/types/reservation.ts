@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export enum ReservationStatus {
   REQUESTED = 'requested',
   APPROVED = 'approved',
@@ -6,7 +8,7 @@ export enum ReservationStatus {
 } 
 
 export interface Reservation {
-  id: string;
+  _id?: mongoose.Types.ObjectId;
   guestId: string;
   expectedArrival: Date;
   tableSize: number;
@@ -16,14 +18,13 @@ export interface Reservation {
 }
 
 export interface CreateReservationInput {
-  guestId: string;
   expectedArrival: Date;
   tableSize: number;
-  status: ReservationStatus;
+  guestId: string;
 }
 
 export interface UpdateReservationInput {
   expectedArrival?: Date;
   tableSize?: number;
-  status: ReservationStatus;
+  status?: ReservationStatus;
 } 

@@ -14,11 +14,14 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "couchbase": "^4.4.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.16.0",
+    "mongoose": "^8.14.3",
     "reflect-metadata": "^0.2.1",
     "sqlite3": "^5.1.7",
     "typeorm": "^0.3.20",
@@ -40,4 +43,4 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3"
   }
-} 
+}

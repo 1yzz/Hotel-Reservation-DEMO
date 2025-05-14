@@ -54,18 +54,15 @@ async function startServer() {
     expressMiddleware(server, {
       context: async ({ req }: ExpressContext): Promise<ApolloContext> => {
         const token = req.headers.authorization?.replace('Bearer ', '');
-        console.log('token', token);
         if (!token) {
           return { user: null };
         }
 
         try {
           const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
-          console.log('decoded', decoded);
           const user = await userService.findById(decoded.userId);
           return { user };
         } catch (error) {
-          console.log('error', error);
           return { user: null };
         }
       },

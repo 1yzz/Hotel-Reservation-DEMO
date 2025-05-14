@@ -6,20 +6,19 @@ export enum ReservationStatus {
 }
 
 export interface Reservation {
-  id: string;
-  userId: string;
-  date: string;
-  time: string;
+  _id: string;
+  guestId: string;
+  expectedArrival: string;
   tableSize: number;
   status: ReservationStatus;
   createdAt: string;
   updatedAt: string;
-  user: {
+  guest: {
+    _id: string;
     name: string;
     email: string;
     phone: string;
   };
-  expectedArrival: string;
 }
 
 export interface CreateReservationInput {

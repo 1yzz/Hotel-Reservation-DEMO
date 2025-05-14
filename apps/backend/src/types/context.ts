@@ -1,7 +1,7 @@
-import { UserEntity } from '../entities/user.entity';
+import { User } from '../models/user.model';
 
 export interface ApolloContext {
-  user: UserEntity | null;
+  user: User | null;
 }
 
 export interface ExpressContext {

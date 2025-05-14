@@ -2,7 +2,7 @@ import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
 import { ReservationService } from '../services/reservation.service';
 import { UserService } from '../services/user.service';
-import { UserRole } from '../entities/user.entity';
+import { UserRole } from '../types/user';
 import { ReservationStatus } from '../types/reservation';
 
 interface Context {
@@ -57,8 +57,8 @@ export const resolvers = {
 
       return reservationService.createReservation({
         ...input,
+        guestId: context.user._id,
         expectedArrival: new Date(input.expectedArrival),
-        status: ReservationStatus.REQUESTED,
       });
     },
 
@@ -77,7 +77,7 @@ export const resolvers = {
 
       // Check authorization
       if (context.user.role === UserRole.GUEST) {
-        if (reservation.guestId !== context.user.id) {
+        if (reservation.guestId.toString() !== context.user._id.toString()) {
           throw new GraphQLError('Not authorized to update this reservation');
         }
         if (input.status) {
@@ -108,7 +108,7 @@ export const resolvers = {
         throw new GraphQLError('Reservation not found');
       }
 
-      if (context.user.role === UserRole.GUEST && reservation.guestId !== context.user.id) {
+      if (context.user.role === UserRole.GUEST && reservation.guestId.toString() !== context.user._id.toString()) {
         throw new GraphQLError('Not authorized to cancel this reservation');
       }
 
