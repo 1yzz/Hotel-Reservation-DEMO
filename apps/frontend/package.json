@@ -17,7 +17,6 @@
     "solid-js": "^1.8.15"
   },
   "devDependencies": {
-    "@solidjs/vite-plugin": "^0.5.0",
     "@types/node": "^20.11.0",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
@@ -28,6 +27,7 @@
     "rimraf": "^5.0.5",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
-    "vite": "^5.0.12"
+    "vite": "^5.0.12",
+    "vite-plugin-solid": "^2.11.6"
   }
 }

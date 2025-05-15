@@ -11,6 +11,9 @@ import { UserService } from './services/user.service';
 import { ApolloContext, ExpressContext } from './types/context';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes';
+import { requestLogger, errorLogger } from './middleware/logger.middleware';
+import { graphqlLogger } from './middleware/graphql-logger.middleware';
+import Logger from './config/logger';
 
 // Load environment variables
 const env = dotenv.config();
@@ -29,6 +32,7 @@ async function startServer() {
   // Middleware
   app.use(cors());
   app.use(json());
+  app.use(requestLogger);
 
   // Auth routes
   app.use('/api/auth', authRoutes);
@@ -36,6 +40,7 @@ async function startServer() {
   const server = new ApolloServer<ApolloContext>({
     typeDefs,
     resolvers,
+    plugins: [graphqlLogger],
     formatError: (error) => {
       // Remove stack trace in production
       if (process.env.NODE_ENV === 'production') {
@@ -69,6 +74,9 @@ async function startServer() {
     })
   );
 
+  // Error handling middleware
+  app.use(errorLogger);
+
   // Health check endpoint
   app.get('/health', (_, res) => {
     res.json({ status: 'ok' });
@@ -76,13 +84,14 @@ async function startServer() {
 
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {
-    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
-    console.log(`Health check available at http://localhost:${PORT}/health`);
-    console.log(`Auth endpoints available at http://localhost:${PORT}/api/auth`);
+    Logger.info(`Server running at http://localhost:${PORT}`);
+    Logger.info(`GraphQL endpoint: http://localhost:${PORT}/api/graphql`);
+    Logger.info(`Health check available at http://localhost:${PORT}/health`);
+    Logger.info(`Auth endpoints available at http://localhost:${PORT}/api/auth`);
   });
 }
 
 startServer().catch((error) => {
-  console.error('Error starting server:', error);
+  Logger.error('Failed to start server:', error);
   process.exit(1);
 }); 
