@@ -1,11 +1,11 @@
-import { AppDataSource } from '../config/typeorm.config';
-import { UserEntity, UserRole } from '../entities/user.entity';
+import { MongoDBConnection } from '../config/mongodb.config';
+import { UserModel } from '../models/user.model';
+import { UserRole } from '../types/user';
+import bcrypt from 'bcryptjs';
 
 async function createEmployee() {
   try {
-    await AppDataSource.initialize();
-
-    const userRepository = AppDataSource.getRepository(UserEntity);
+    await MongoDBConnection.getInstance().connect();
 
     const phone = process.argv[2];
     const password = process.argv[3];
@@ -15,21 +15,24 @@ async function createEmployee() {
       process.exit(1);
     }
 
-    const existingUser = await userRepository.findOne({ where: { phone } });
+    const existingUser = await UserModel.findOne({ phone });
     if (existingUser) {
       console.error('User with this phone number already exists');
       process.exit(1);
     }
 
-    const employee = userRepository.create({
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const employee = new UserModel({
       phone,
-      password,
+      password: hashedPassword,
       role: UserRole.EMPLOYEE,
       name: 'Employee',
       email: `${phone}@restaurant.com`,
+      createdAt: new Date(),
+      updatedAt: new Date()
     });
 
-    await userRepository.save(employee);
+    await employee.save();
     console.log('Employee created successfully');
     process.exit(0);
   } catch (error) {

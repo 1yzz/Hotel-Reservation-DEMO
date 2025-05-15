@@ -1,13 +1,5 @@
-import { gql } from 'graphql-tag';
 
-export const typeDefs = gql`
-  enum ReservationStatus {
-    requested
-    approved
-    cancelled
-    completed
-  }
-
+export const typeDefs = `#graphql
   enum UserRole {
     guest
     employee
@@ -19,7 +11,7 @@ export const typeDefs = gql`
     guest: User!
     expectedArrival: String!
     tableSize: Int!
-    status: ReservationStatus!
+    status: String!
     createdAt: String!
     updatedAt: String!
   }
@@ -45,7 +37,7 @@ export const typeDefs = gql`
   input UpdateReservationInput {
     expectedArrival: String
     tableSize: Int
-    status: ReservationStatus
+    status: String
   }
 
   input RegisterInput {
@@ -61,7 +53,7 @@ export const typeDefs = gql`
   }
 
   type Query {
-    reservations(date: String, status: ReservationStatus): [Reservation!]!
+    reservations(date: String, status: String): [Reservation!]!
     reservation(id: ID!): Reservation
     me: User
   }

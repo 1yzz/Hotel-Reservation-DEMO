@@ -1,8 +1,8 @@
 export enum ReservationStatus {
-  requested = 'requested',
-  approved = 'approved',
-  cancelled = 'cancelled',
-  completed = 'completed'
+  REQUESTED = 'requested',
+  APPROVED = 'approved',
+  CANCELLED = 'cancelled',
+  COMPLETED = 'completed'
 }
 
 export interface Reservation {

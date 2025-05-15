@@ -1,6 +1,5 @@
 import mongoose, { Schema, HydratedDocument } from 'mongoose';
 import { Reservation, ReservationStatus } from '../types/reservation';
-import { User } from './user.model';
 
 export type ReservationDocument = HydratedDocument<Reservation>;
 

@@ -19,12 +19,19 @@ export const resolvers = {
       const reservationService = new ReservationService();
       await reservationService.initialize();
 
+      if (date && status) {
+        return (await reservationService.findByDate(new Date(date)))
+          .filter(reservation => reservation.status === status);
+      }
+
       if (date) {
         return reservationService.findByDate(new Date(date));
       }
+
       if (status) {
-        return reservationService.findByStatus(status);
+        return reservationService.findByStatus(status as ReservationStatus);
       }
+
       return reservationService.findAll();
     },
 

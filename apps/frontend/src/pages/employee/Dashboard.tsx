@@ -8,7 +8,7 @@ const Dashboard = () => {
   const [loading, setLoading] = createSignal(true);
   const [error, setError] = createSignal<string | null>(null);
   const [selectedDate, setSelectedDate] = createSignal(new Date().toISOString().split('T')[0]);
-  const [selectedStatus, setSelectedStatus] = createSignal<ReservationStatus>(ReservationStatus.requested);
+  const [selectedStatus, setSelectedStatus] = createSignal<ReservationStatus>(ReservationStatus.REQUESTED);
 
   const fetchReservations = async () => {
 
@@ -22,11 +22,16 @@ const Dashboard = () => {
         body: JSON.stringify({
           query: `
             query {
-              reservations(date: "${selectedDate()}", status: "${selectedStatus()}") {
-                id
+              reservations(date: "${selectedDate()}" status: "${selectedStatus()}") {
+                _id
                 status
                 expectedArrival
                 tableSize
+                guest {
+                  _id
+                  name
+                  phone
+                }
               } 
             }
           `,
@@ -48,13 +53,22 @@ const Dashboard = () => {
 
   const updateReservationStatus = async (id: string, status: ReservationStatus) => {
     try {
-      const response = await fetch(`/api/reservations/${id}/status`, {
-        method: 'PUT',
+      const response = await fetch(`/api/graphql`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({
+          query: `
+            mutation {
+              updateReservation(id: "${id}", input: { status: "${status}" }) {
+                _id
+                status
+              }
+            }
+          `
+        })
       });
 
       if (!response.ok) throw new Error('Failed to update reservation status');
@@ -91,11 +105,10 @@ const Dashboard = () => {
             value={selectedStatus()}
             onChange={(e) => setSelectedStatus(e.target.value as ReservationStatus)}
           >
-            <option value="ALL">All Statuses</option>
-            <option value={ReservationStatus.requested}>Pending</option>
-            <option value={ReservationStatus.approved}>Approved</option>
-            <option value={ReservationStatus.cancelled}>Cancelled</option>
-            <option value={ReservationStatus.completed}>Completed</option>
+            <option value={ReservationStatus.REQUESTED }>Requested</option>
+            <option value={ReservationStatus.APPROVED}>Approved</option>
+            <option value={ReservationStatus.CANCELLED}>Cancelled</option>
+            <option value={ReservationStatus.COMPLETED}>Completed</option>
           </select>
         </div>
       </div>
@@ -116,7 +129,7 @@ const Dashboard = () => {
               {reservations().map((reservation) => (
                 <div class="reservation-card">
                   <div class="reservation-header">
-                    <h3>Reservation #{reservation.id}</h3>
+                    <h3>Reservation #{reservation._id}</h3>
                     <span class={`status ${reservation.status.toLowerCase()}`}>
                       {reservation.status}
                     </span>
@@ -124,37 +137,37 @@ const Dashboard = () => {
                   <div class="reservation-details">
                     <p><strong>Guest:</strong> {reservation?.guest?.name}</p>
                     <p><strong>Phone:</strong> {reservation?.guest?.phone}</p>
-                    <p><strong>Date:</strong> {new Date(reservation.date).toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> {reservation.time}</p>
-                    <p><strong>Party Size:</strong> {reservation.tableSize}</p>
+                    <p><strong>Date:</strong> {new Date(parseInt(reservation.expectedArrival)).toLocaleDateString()}</p>
+                    <p><strong>Time:</strong> {new Date(parseInt(reservation.expectedArrival)).toLocaleTimeString()}</p>
+                    <p><strong>Table Size:</strong> {reservation.tableSize}</p>
               
                   </div>
                   <div class="reservation-actions">
                     <A
-                      href={`/employee/reservations/${reservation.id}`}
+                      href={`/employee/reservations/${reservation._id}`}
                       class="view-btn"
                     >
                       View Details
                     </A>
                     <div class="status-actions">
                       <button
-                        onClick={() => updateReservationStatus(reservation.id, ReservationStatus.approved)}
+                        onClick={() => updateReservationStatus(reservation._id, ReservationStatus.APPROVED)}
                         class="approve-btn"
-                        disabled={reservation.status === ReservationStatus.approved}
+                        disabled={reservation.status === ReservationStatus.APPROVED}
                       >
                         Approve
                       </button>
                       <button
-                        onClick={() => updateReservationStatus(reservation.id, ReservationStatus.cancelled)}
+                        onClick={() => updateReservationStatus(reservation._id, ReservationStatus.CANCELLED)}
                         class="cancel-btn"
-                        disabled={reservation.status === ReservationStatus.cancelled}
+                        disabled={reservation.status === ReservationStatus.CANCELLED}
                       >
                         Cancel
                       </button>
                       <button
-                        onClick={() => updateReservationStatus(reservation.id, ReservationStatus.completed)}
+                          onClick={() => updateReservationStatus(reservation._id, ReservationStatus.COMPLETED)}
                         class="complete-btn"
-                        disabled={reservation.status === ReservationStatus.completed}
+                        disabled={reservation.status === ReservationStatus.COMPLETED}
                       >
                         Complete
                       </button>
