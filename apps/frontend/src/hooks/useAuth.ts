@@ -1,104 +1,117 @@
-import { createSignal, createEffect } from 'solid-js';
+import { createEffect } from 'solid-js';
 import { useNavigate } from '@solidjs/router';
-import { User } from '../types/user';
+import { userStore } from '../stores/userStore';
+import { User, UserRole } from '../types/user';
 
 export const useAuth = () => {
-  const [user, setUser] = createSignal<User | null>(null);
-  const [loading, setLoading] = createSignal(true);
   const navigate = useNavigate();
 
-  createEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        // Check for stored token and user data
-        const token = localStorage.getItem('token');
-        const storedUser = localStorage.getItem('user');
-        
-        if (token && storedUser) {
-          // Verify token with backend
-          const response = await fetch('/api/auth/verify', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+  const initializeAuth = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      userStore.setUser(null);
+      userStore.setLoading(false);
+      return;
+    }
 
-          if (response.ok) {
-            setUser(JSON.parse(storedUser));
-          } else {
-            // Clear invalid data
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            setUser(null);
-          }
-        }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-        // Clear any potentially invalid data
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    initializeAuth();
-  });
-
-  const login = async (phone: string, password: string): Promise<User> => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, password }),
+      const response = await fetch('http://localhost:4000/api/auth/verify', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
-      if (!response.ok) throw new Error('Login failed');
-
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      setUser(data.user);
-      return data.user;
+      if (response.ok) {
+        const data = await response.json();
+        userStore.setUser(data.user);
+      } else {
+        localStorage.removeItem('token');
+        userStore.setUser(null);
+      }
     } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+      console.error('Token verification failed:', error);
+      localStorage.removeItem('token');
+      userStore.setUser(null);
+    } finally {
+      userStore.setLoading(false);
     }
   };
 
-  const register = async (userData: { email: string; password: string; name: string; phone: string }) => {
+  createEffect(() => {
+    initializeAuth();
+  });
+
+  const login = async (phone: string, password: string) => {
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch('http://localhost:4000/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ phone, password })
       });
 
-      if (!response.ok) throw new Error('Registration failed');
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        userStore.setUser(data.user);
+        navigate('/');
+        return { success: true, user: data.user };
+      } else {
+        return {
+          success: false,
+          error: data.message || 'Login failed'
+        };
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message || 'Login failed'
+      };
+    }
+  };
+
+  const register = async (name: string, email: string, password: string, role: UserRole) => {
+    try {
+      const response = await fetch('http://localhost:4000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, email, password, role })
+      });
 
       const data = await response.json();
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      setUser(data.user);
-      navigate('/');
-    } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        userStore.setUser(data.user);
+        navigate('/');
+        return { success: true };
+      } else {
+        return {
+          success: false,
+          error: data.message || 'Registration failed'
+        };
+      }
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message || 'Registration failed'
+      };
     }
   };
 
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
+    userStore.clearUser();
     navigate('/login');
   };
 
   return {
-    user,
-    loading,
+    user: () => userStore.state.user,
+    loading: () => userStore.state.loading,
     login,
     register,
-    logout,
+    logout
   };
 }; 

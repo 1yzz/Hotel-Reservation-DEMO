@@ -19,13 +19,13 @@ const Login = () => {
     setError(null);
 
     try {
-      const user = await login(formData().phone, formData().password);
-      
-      // TODO: redirect to employee dashboard if user is employee
-      if (user.role === UserRole.EMPLOYEE) {
-        navigate('/employee/dashboard');
-      } else {
-        navigate('/');
+      const data = await login(formData().phone, formData().password);
+      if (data.success) {
+        if (data.user?.role === UserRole.EMPLOYEE) {
+          navigate('/employee/dashboard');
+        } else {
+          navigate('/');
+        }
       }
 
     } catch (err) {

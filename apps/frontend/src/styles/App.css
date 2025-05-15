@@ -1,3 +1,54 @@
+/* App-specific styles */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: var(--spacing-md);
+  width: 100%;
+  max-width: var(--breakpoint-xl);
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    padding: var(--spacing-xl);
+  }
+}
+
+/* Responsive container */
+.container {
+  width: 100%;
+  padding: 0 var(--spacing-md);
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: var(--breakpoint-sm);
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: var(--breakpoint-md);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: var(--breakpoint-lg);
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: var(--breakpoint-xl);
+  }
+}
 
 .logo {
   animation: logo-spin infinite 20s linear;
