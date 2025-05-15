@@ -1,103 +1,56 @@
-# Hilton Restaurants Table Reservation System
+# H-Reservation
 
-A modern table reservation system for Hilton Restaurants, built with Node.js, TypeScript, SQLite, and GraphQL.
-
-## Features
-
-- Guest reservation management
-- Restaurant employee dashboard
-- Real-time reservation status updates
-- SQLite database for local development
-- GraphQL API for business operations
-- REST API for authentication
-- Cucumber BDD testing
-
-## Tech Stack
-
-- **Backend:**
-  - Node.js with TypeScript
-  - Express.js for REST API
-  - Apollo Server for GraphQL
-  - TypeORM with SQLite
-  - Winston for logging
-
-- **Testing:**
-  - Cucumber for BDD testing
-  - Chai for assertions
-
-## Prerequisites
-
-- Node.js (v16 or higher)
-- npm (v7 or higher)
-
-## Setup
-
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd h-reservation
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Build the project:
-   ```bash
-   npm run build
-   ```
-
-## Development
-
-1. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-2. Run tests:
-   ```bash
-   npm test
-   ```
+A hotel reservation system built with SolidJS and Node.js.
 
 ## Project Structure
 
-```
-/h-reservation
-  /apps
-    /backend         # Node.js backend
-      /src
-        /entities    # TypeORM entities
-        /services    # Business logic
-        /types       # TypeScript types
-        /features    # Cucumber features
-  /packages
-    /common         # Shared utilities
-```
+This is a monorepo containing the following packages:
 
-## API Documentation
+- `apps/frontend`: SolidJS frontend application
+- `apps/backend`: Node.js/Express backend application
 
-### GraphQL Endpoints
+## Prerequisites
 
-- `POST /graphql`
-  - Query reservations
-  - Create/update/cancel reservations
-  - Filter by date and status
+- Node.js >= 18.0.0
+- pnpm >= 8.0.0
 
-### REST Endpoints
+## Getting Started
 
-- `POST /auth/register` - Register new user
-- `POST /auth/login` - User login
+1. Install dependencies:
+   ```bash
+   pnpm install
+   ```
 
-## Testing
+2. Set up environment variables:
+   ```bash
+   cp apps/backend/.env.example apps/backend/.env
+   ```
 
-The project uses Cucumber for Behavior-Driven Development (BDD) testing. Feature files are located in `apps/backend/features/`.
+3. Start development servers:
+   ```bash
+   pnpm dev
+   ```
 
-Run tests with:
-```bash
-npm test
-```
+## Available Scripts
 
-## License
+- `pnpm dev`: Start all applications in development mode
+- `pnpm build`: Build all applications
+- `pnpm lint`: Run linting for all applications
+- `pnpm test`: Run tests for all applications
+- `pnpm clean`: Clean build artifacts
 
-MIT 
+## Development
+
+### Frontend
+
+The frontend is built with SolidJS and includes:
+- TypeScript
+- Solid Router for routing
+
+### Backend
+
+The backend is built with Node.js and Express, featuring:
+- TypeScript
+- MongoDB
+- JWT authentication
+- GraphQL API with Apollo Server
