@@ -16,6 +16,7 @@ export class AuthController {
 
   async verify(req: Request, res: Response) {
     try {
+      // @ts-ignore
       const user = req.user as User;
       if (!user) {
         return res.status(401).json({ message: 'Invalid token' });

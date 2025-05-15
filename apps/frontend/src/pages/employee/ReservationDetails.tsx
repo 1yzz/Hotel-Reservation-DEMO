@@ -67,7 +67,7 @@ const ReservationDetails = () => {
             }
           `
         })
-      });XSXS
+      });
 
       if (!response.ok) throw new Error('Failed to update reservation status');
 

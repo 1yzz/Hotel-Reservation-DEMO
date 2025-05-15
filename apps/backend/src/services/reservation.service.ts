@@ -64,4 +64,8 @@ export class ReservationService {
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<Reservation | null> {
     return this.updateReservation(id, { status });
   }
+
+  async deleteAllReservations(): Promise<void> {
+    await ReservationModel.deleteMany({});
+  }
 } 

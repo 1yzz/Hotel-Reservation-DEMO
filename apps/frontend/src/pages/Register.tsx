@@ -29,7 +29,7 @@ export default function Register() {
 
     try {
       const { confirmPassword, ...registerData } = formData();
-      await register(registerData);
+      await register(registerData.name, registerData.email, registerData.phone, registerData.password);
       navigate('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');

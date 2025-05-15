@@ -43,4 +43,8 @@ export class UserService {
       { new: true }
     ).exec();
   }
+
+  async deleteAllUsers(): Promise<void> {
+    await UserModel.deleteMany({});
+  }
 } 

@@ -71,14 +71,14 @@ export const useAuth = () => {
     }
   };
 
-  const register = async (name: string, email: string, password: string, role: UserRole) => {
+  const register = async (name: string, email: string, phone: string, password: string) => {
     try {
       const response = await fetch('http://localhost:4000/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name, email, password, role })
+        body: JSON.stringify({ name, phone, email, password })
       });
 
       const data = await response.json();

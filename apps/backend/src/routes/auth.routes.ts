@@ -13,6 +13,6 @@ router.post('/register', (req, res) => authController.register(req, res));
 router.post('/login', (req, res) => authController.login(req, res));
 
 // Protected routes
-router.get('/verify', requireAuth, (req, res) => authController.verify(req, res));
+router.get('/verify', requireAuth, (req: any, res) => authController.verify(req, res));
 
 export default router; 

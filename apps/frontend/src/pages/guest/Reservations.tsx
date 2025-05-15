@@ -113,7 +113,7 @@ const GuestReservations = () => {
                     <p><strong>Table Size:</strong> {reservation.tableSize}</p>
                   </div>
                   <div class="reservation-actions">
-                      <Show when={reservation.status === ReservationStatus.requested}>
+                      <Show when={reservation.status === ReservationStatus.REQUESTED}>
                       <A
                         href={`/reservations/${reservation._id}/edit`}
                         class="edit-btn"

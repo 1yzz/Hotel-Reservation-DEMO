@@ -44,6 +44,12 @@ h-reservation/
    ```bash
    pnpm dev
    ```
+0. Create the Empoyee user
+```bash
+cd apps/backend && pnpx ts-node src/scripts/createEmployee.ts
+```
+
+
 
 ## Development
 
