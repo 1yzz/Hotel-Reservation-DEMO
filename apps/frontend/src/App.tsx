@@ -9,6 +9,7 @@ import Dashboard from './pages/employee/Dashboard';
 import '@styles/App.css';
 import ReservationDetails from './pages/employee/ReservationDetails';
 import Home from './pages/Home';
+import Charts from './pages/employee/Charts';
 
 const Layout = (props: RouteSectionProps) => (
   <div class="app">
@@ -29,6 +30,7 @@ const App = () => {
         <Route path="/reservations" component={GuestReservations} />
         <Route path="/reservations/create" component={CreateReservation} />
         <Route path="/employee/dashboard" component={Dashboard} />
+        <Route path="/employee/charts" component={Charts} />
         <Route path="/employee/reservations/:id" component={ReservationDetails} />
         <Route path="*" component={() => <Navigate href="/home" />} />
       </Route>

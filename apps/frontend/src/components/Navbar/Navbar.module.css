@@ -1,29 +1,19 @@
 .navbar {
-  background-color: var(--surface-color);
-  padding: var(--spacing-md);
-  border-bottom: 1px solid var(--border-color);
-  position: sticky;
-  top: 0;
-  z-index: var(--z-sticky);
-}
-
-.navbarContent {
+  background-color: #1a1a1a;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: var(--breakpoint-xl);
-  margin: 0 auto;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
+  position: relative;
 }
 
 .logo {
-  color: var(--primary-color);
-  font-size: var(--text-xl);
-  font-weight: var(--font-bold);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.logo a {
+  color: #fff;
   text-decoration: none;
 }
 
@@ -31,178 +21,133 @@
   display: none;
   background: none;
   border: none;
-  padding: var(--spacing-sm);
   cursor: pointer;
+  padding: 0.5rem;
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-md);
-  transition: background-color var(--transition-fast);
-}
-
-.menuButton:hover {
-  background-color: var(--hover-bg);
+  align-items: center;
+  justify-content: center;
 }
 
 .menuIcon {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 24px;
-  height: 2px;
-  background-color: var(--text-color);
+  height: 18px;
   position: relative;
-  transition: all var(--transition-fast);
-  margin: 0 auto;
 }
 
-.menuIcon::before,
-.menuIcon::after {
-  content: '';
-  position: absolute;
-  width: 24px;
+.menuIcon span {
+  display: block;
+  width: 100%;
   height: 2px;
-  background-color: var(--text-color);
-  transition: all var(--transition-fast);
+  background-color: #fff;
+  transition: all 0.3s ease;
+  position: absolute;
   left: 0;
 }
 
-.menuIcon::before {
-  top: -8px;
-}
-
-.menuIcon::after {
-  bottom: -8px;
-}
-
-.menuOpen .menuIcon {
-  background-color: transparent;
-}
-
-.menuOpen .menuIcon::before {
-  transform: rotate(45deg);
+.menuIcon span:nth-child(1) {
   top: 0;
 }
 
-.menuOpen .menuIcon::after {
-  transform: rotate(-45deg);
+.menuIcon span:nth-child(2) {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.menuIcon span:nth-child(3) {
   bottom: 0;
+}
+
+.menuIcon.menuOpen span:nth-child(1) {
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.menuIcon.menuOpen span:nth-child(2) {
+  opacity: 0;
+}
+
+.menuIcon.menuOpen span:nth-child(3) {
+  top: 50%;
+  transform: translateY(-50%) rotate(-45deg);
 }
 
 .menu {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: 2rem;
 }
 
 .userInfo {
+  color: #fff;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 1rem;
 }
 
-.userName {
-  font-weight: var(--font-medium);
-}
-
-.userRole {
-  color: var(--text-light);
-  font-size: var(--text-sm);
+.role {
+  background-color: #333;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  text-transform: capitalize;
 }
 
 .link {
-  color: var(--text-color);
+  color: #fff;
   text-decoration: none;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
 }
 
 .link:hover {
-  color: var(--primary-color);
+  background-color: #333;
 }
 
 .logoutButton {
-  background-color: transparent;
-  color: var(--error-color);
-  border: 1px solid var(--error-color);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-md);
+  background-color: #dc2626;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background-color 0.2s;
 }
 
 .logoutButton:hover {
-  background-color: var(--error-color);
-  color: white;
+  background-color: #b91c1c;
 }
 
 @media (max-width: 768px) {
   .menuButton {
     display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .menu {
-    position: fixed;
-    top: 60px;
+    display: none;
+    position: absolute;
+    top: 100%;
     left: 0;
     right: 0;
-    background-color: var(--surface-color);
-    padding: var(--spacing-md);
+    background-color: #1a1a1a;
+    padding: 1rem;
     flex-direction: column;
     align-items: stretch;
-    gap: var(--spacing-md);
-    border-bottom: 1px solid var(--border-color);
-    transform: translateY(-100%);
-    opacity: 0;
-    visibility: hidden;
-    transition: all var(--transition-normal);
+    gap: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
-  .menuOpen {
-    transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
+  .menu.menuOpen {
+    display: flex;
   }
 
   .userInfo {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--spacing-xs);
-  }
-
-  .link {
-    display: block;
-    text-align: center;
-  }
-
-  .logoutButton {
-    width: 100%;
-  }
-}
-
-@media (min-width: 768px) {
-  .navbar {
-    padding: var(--spacing-md) var(--spacing-xl);
-  }
-
-  .menu {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .brand {
-    margin-bottom: 0;
-  }
-
-  .userInfo {
-    flex-direction: row;
-    align-items: center;
-    gap: var(--spacing-md);
-  }
-
-  .logoutButton {
-    width: auto;
-    margin-top: 0;
+    gap: 0.5rem;
   }
 } 
