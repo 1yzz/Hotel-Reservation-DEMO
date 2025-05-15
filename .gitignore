@@ -29,6 +29,7 @@ pnpm-debug.log*
 
 # Testing
 coverage
+cucumber-report.html
 
 # Misc
 .DS_Store
